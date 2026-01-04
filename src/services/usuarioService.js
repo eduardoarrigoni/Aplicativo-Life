@@ -1,4 +1,4 @@
-import { sign } from 'jsonwebtoken';
+import { sign, decode } from 'jsonwebtoken';
 import secret from '../config/chaveSecreta.js';
 import connectDataBase from '../config/dbConnect.js';
 import { compare } from 'bcryptjs';
@@ -23,7 +23,7 @@ class UsuarioService{
             const senhasIguais = compare(info.senha, usuario.senha);
 
             if(!senhasIguais){
-               throw new erroValidacao;
+               throw new erroValidacao("Usuario ou senha incorreto");
             }
             const tokenAcesso = sign({
                 idUsuario: usuario.rows[0].idUsuario,
@@ -37,6 +37,13 @@ class UsuarioService{
         }catch(erro){
             throw erro;
         }
+    }
+
+    static decodificarUsuario = async(token) => {
+
+        const { idUsuario, login } = decode(token);
+
+        return { idUsuario, login }
     }
 }
 

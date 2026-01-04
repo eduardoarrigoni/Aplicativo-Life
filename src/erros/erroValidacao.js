@@ -1,8 +1,8 @@
 import erroBase from "./erroBase.js";
 
 class erroValidacao extends erroBase{
-    constructor(){
-        super("Erro de validação de dados", 400);
+    constructor(message = "Erro de validação de dados"){
+        super(message, 400);
     }
 }
 
