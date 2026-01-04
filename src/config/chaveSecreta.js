@@ -1,0 +1,1 @@
+export default { chave: "870d2120fd62d5d322216ba722c2c66f" }
