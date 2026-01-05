@@ -1,4 +1,5 @@
 import connectDataBase from '../config/dbConnect.js';
+import ErroDataBase from '../erros/erroDataBase.js';
 import erroValidacao from '../erros/erroValidacao.js';
 import UsuarioService from '../services/usuarioService.js';
 import usuarioService from '../services/usuarioService.js'
@@ -11,7 +12,7 @@ class UsuarioController{
         try{
             const { login, senha } = req.body;
 
-            const retornoService = usuarioService.loginUsuario({ login, senha });
+            const retornoService = await usuarioService.loginUsuario({ login, senha });
 
             res.status(200).json({
                 message: "Login bem sucedido",
@@ -45,18 +46,26 @@ class UsuarioController{
 
     static atualizarDadosUsuario = async (req, res, next) => {
 
+        const { idUsuario } = await UsuarioService.decodificarUsuario(req.body.token);
+        
         try{
             const client = connectDataBase();
             const alteracaoNecessaria = Object.entries(req.body);
-            const { idUsuario } = UsuarioService.decodificarUsuario(req.body.token);
-            const sql = `UPDATE usuario SET ${alteracaoNecessaria[0][0]} = ${alteracaoNecessaria[0][1]} WHERE idusuario = ${idUsuario}`;
 
-            const resultado = client.query(sql);
+            let sql = `UPDATE usuario SET` 
+            for( [chave, valor] of alteracaoNecessaria ){
+                sql += ` ${chave} = ${valor}`
+            }
+            sql += ` WHERE idusuario = ${idUsuario}`
+
+            const resultado = await client.query(sql);
 
             if(resultado.rowCount > 0 ){
                 res.status(200).json({
                     message: "Dado atualizado com sucesso"
                 })
+            }else{
+                throw new ErroDataBase;
             }
 
         }catch(erro){

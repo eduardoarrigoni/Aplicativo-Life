@@ -1,9 +1,10 @@
-import { sign, decode } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import secret from '../config/chaveSecreta.js';
 import connectDataBase from '../config/dbConnect.js';
 import { compare } from 'bcryptjs';
 import NaoEncontrado from '../erros/NaoEncontrado.js';
 import erroValidacao from '../erros/erroValidacao.js';
+
 
 class UsuarioService{
 
@@ -20,17 +21,13 @@ class UsuarioService{
                 throw new NaoEncontrado("Usuario nao cadastrado");
             }
 
-            const senhasIguais = compare(info.senha, usuario.senha);
+            const senhasIguais = compare(info.senha, usuario.rows[0].senha);
 
             if(!senhasIguais){
                throw new erroValidacao("Usuario ou senha incorreto");
             }
-            const tokenAcesso = sign({
-                idUsuario: usuario.rows[0].idUsuario,
-                login: info.login
-            }, secret.chave, {
-                expiresIn: 3600
-            })
+            
+            const tokenAcesso = this.atualizarToken(usuario.rows[0].idUsuario, info.login)
 
             return { tokenAcesso }
 
@@ -39,9 +36,22 @@ class UsuarioService{
         }
     }
 
+    static atualizarToken = async(idUsuario, login) => {
+        
+        const novoToken = jwt.sign({
+            idUsuario: idUsuario,
+            login: login
+        }, secret.chave, {
+            expiresIn: 3600
+        });
+
+        return novoToken;
+
+    }
+    
     static decodificarUsuario = async(token) => {
 
-        const { idUsuario, login } = decode(token);
+        const { idUsuario, login } = await jwt.verify(token, secret.chave);
 
         return { idUsuario, login }
     }
