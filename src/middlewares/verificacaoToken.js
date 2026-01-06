@@ -9,6 +9,9 @@ class VerificacaoToken {
         const token = req.headers['Autorization'].split(' ')[1];
 
         if(!token){
+            if(req.path === '/usuario/login' || req.path === '/usuario/cadastro'){
+                next();
+            }
             res.status(401).json({
                 message: "token não fornecido"
             });

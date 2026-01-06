@@ -46,10 +46,9 @@ class UsuarioController{
 
     static atualizarDadosUsuario = async (req, res, next) => {
 
-        const { idUsuario } = await UsuarioService.decodificarUsuario(req.body.token);
-        
         try{
             const client = connectDataBase();
+            const idUsuario = req.usuario.idusuario;
             const alteracaoNecessaria = Object.entries(req.body);
 
             let sql = `UPDATE usuario SET` 

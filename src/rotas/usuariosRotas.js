@@ -1,14 +1,13 @@
 import express from "express";
-import usuarioController from "../controllers/usuarioController.js";
 import VerificacaoToken from "../middlewares/verificacaoToken.js";
+import UsuarioController from "../controllers/usuarioController.js";
 
 const rotas = express.Router();
 
 
-rotas.get("/cliente/login", usuarioController.loginUsuario);
-rotas.get("/clientes/atualizar/dados", VerificacaoToken.validarToken, usuarioController.atualizarDadosUsuario);
-rotas.post("/clientes", ClienteController.cadastrarCliente);
-rotas.put("/clientes/:id", ClienteController.atualizarClienteId);
-rotas.delete("/clientes/:id", ClienteController.deletarClienteId);
+rotas.get("/usuario/login", UsuarioController.loginUsuario);
+rotas.post("/usuario/cadastro", UsuarioController.cadastroUsuario);
+rotas.put("/usuario/atualizar/dados", UsuarioController.atualizarDadosUsuario);
+
 
 export default rotas;
