@@ -1,5 +1,4 @@
 import NaoEncontrado from "../../erros/NaoEncontrado.js";
-import { treinoUnico } from "../../models/TreinoUnico.js";
 import CalculoSuporte from "../CalculoSuporte.js";
 import connectDataBase from "../../config/dbConnect.js";
 
@@ -76,4 +75,4 @@ class treinosController{
 
 
 }
-export default treinoUnicoController;
+export default treinosController;

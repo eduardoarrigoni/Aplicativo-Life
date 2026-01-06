@@ -1,5 +1,5 @@
 import express from "express";
-import treinoUnicoController from "../controllers/treinoUnicoController.js";
+import treinoUnicoController from "../controllers/saudeFisica/treinosController.js";
 
 const rotas = express.Router();
 

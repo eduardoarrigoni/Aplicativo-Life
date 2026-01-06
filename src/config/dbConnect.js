@@ -1,19 +1,19 @@
-import { Pool } from 'pg';
 import "dotenv/config";
+import { Pool } from 'pg';
 async function connectDataBase() {
     if (global.connection)
         return global.connection.connect();
     
     
     const pool = new Pool({
-        user: USER,
-        password: PASSWORD,
-        host: HOST,
-        port: PORT_DATABASE,
-        database: DATABASE,
+        user: process.env.USER,
+        password: process.env.PASSWORD,
+        host: process.env.HOST,
+        port: process.env.PORT_DATABASE,
+        database: process.env.DATABASE,
         ssl: {
         rejectUnauthorized: true,
-        ca: CERTIFICADO 
+        ca: process.env.CERTIFICADO 
         }
     });
 
