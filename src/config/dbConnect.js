@@ -30,5 +30,4 @@ async function connectDataBase() {
     return pool.connect();
 }
 
-connectDataBase();
 export default connectDataBase;

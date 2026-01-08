@@ -26,11 +26,14 @@ class UsuarioController{
 
         try{
 
-            const client = connectDataBase();
-            const { nome, cpf, email, senha, dataNascimento} = req.body;
+            const client = await connectDataBase();
+            const { cpf, email, nome, senha, datanascimento} = req.body;
 
-            const sql = `INSERT INTO usuario VALUES (${cpf}, ${email}, ${nome}, ${senha}, ${dataNascimento}, NOW())`
+            console.log(typeof(cpf), typeof(email), typeof(nome), typeof(senha), typeof(datanascimento));
+            const sql = `INSERT INTO usuario (cpf, email, nome, senha, datanascimento, datacadastro) VALUES (${cpf}, ${email}, ${nome}, ${senha}, ${datanascimento}, NOW())`;
+            
             const resultado = await client.query(sql);
+            console.log("entrou")
             if(resultado.rowCount > 0){
                 res.status(200).json({
                     message: "Cadastro realizado com sucesso"

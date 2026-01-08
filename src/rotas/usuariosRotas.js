@@ -1,5 +1,4 @@
 import express from "express";
-import VerificacaoToken from "../middlewares/verificacaoToken.js";
 import UsuarioController from "../controllers/usuarioController.js";
 
 const rotas = express.Router();

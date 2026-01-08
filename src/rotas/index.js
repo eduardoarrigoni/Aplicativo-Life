@@ -1,6 +1,5 @@
 import express from "express";
 import usuarios from "./usuariosRotas.js"
-import treinoUnico from "./treinoUnicoRotas.js";
 
 const rotas = (app) => {
 

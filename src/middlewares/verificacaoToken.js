@@ -7,7 +7,7 @@ class VerificacaoToken {
         //'Authorization': `Bearer ${token}`
         //}
         const token = req.headers['Autorization'].split(' ')[1];
-
+        console.log("entrou")
         if(!token){
             if(req.path === '/usuario/login' || req.path === '/usuario/cadastro'){
                 next();
