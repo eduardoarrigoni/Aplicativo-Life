@@ -1,7 +1,6 @@
 import connectDataBase from '../config/dbConnect.js';
 import ErroDataBase from '../erros/erroDataBase.js';
 import erroValidacao from '../erros/erroValidacao.js';
-import UsuarioService from '../services/usuarioService.js';
 import usuarioService from '../services/usuarioService.js'
 
 class UsuarioController{
@@ -30,7 +29,7 @@ class UsuarioController{
             const client = connectDataBase();
             const { nome, cpf, email, senha, dataNascimento} = req.body;
 
-            const sql = `INSERT INTO usuario VALUES (${nome}, ${cpf}, ${email}, ${senha}, ${dataNascimento})`
+            const sql = `INSERT INTO usuario VALUES (${cpf}, ${email}, ${nome}, ${senha}, ${dataNascimento}, NOW())`
             const resultado = await client.query(sql);
             if(resultado.rowCount > 0){
                 res.status(200).json({

@@ -11,8 +11,13 @@ class UsuarioService{
     static loginUsuario = async(info) => {
         try{
             const client = connectDataBase();
+            let sql;
+            if (info.login.includes('@')){
 
-            const sql = `SELECT idUsuario, senha FROM usuario WHERE login = ${info.login}`;
+                sql = `SELECT idUsuario, senha FROM usuario WHERE email = ${info.login}`;
+            }else{
+                sql = `SELECT idUsuario, senha FROM usuario WHERE cpf = ${info.login}`;
+            }
 
             //receber id do usuario e a senha
             const usuario = await client.query(sql);
@@ -21,7 +26,7 @@ class UsuarioService{
                 throw new NaoEncontrado("Usuario nao cadastrado");
             }
 
-            const senhasIguais = compare(info.senha, usuario.rows[0].senha);
+            const senhasIguais = await compare(info.senha, usuario.rows[0].senha);
 
             if(!senhasIguais){
                throw new erroValidacao("Usuario ou senha incorreto");
@@ -49,12 +54,6 @@ class UsuarioService{
 
     }
     
-    static decodificarUsuario = async(token) => {
-
-        const { idUsuario, login } = await jwt.verify(token, secret.chave);
-
-        return { idUsuario, login }
-    }
 }
 
 export default UsuarioService;
