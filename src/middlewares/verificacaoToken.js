@@ -6,27 +6,19 @@ class VerificacaoToken {
         //headers: {
         //'Authorization': `Bearer ${token}`
         //}
-        const token = req.headers['Autorization'].split(' ')[1];
-        console.log("entrou")
+        if(req.path === '/usuario/login' || req.path === '/usuario/cadastro'){
+            return next();
+        }
+        const token = req.headers.authorization.split(' ')[1];
+        
         if(!token){
-            if(req.path === '/usuario/login' || req.path === '/usuario/cadastro'){
-                next();
-            }
             res.status(401).json({
                 message: "token não fornecido"
             });
         }
 
-        const usuario = await jwt.verify(token, secret.chave, (erro) => {
-
-            if(erro){
-                const mensagem = erro.name === 'TokenExpiredError' ? "Token expirado" : "Token inválido";
-                res.status(403).json({
-                    erro: mensagem
-                });
-            }
-        });
-
+        const usuario = jwt.verify(token, secret.chave);
+        
         req.usuario = usuario;
         next();
 

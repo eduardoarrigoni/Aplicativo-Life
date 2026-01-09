@@ -8,43 +8,44 @@ import erroValidacao from '../erros/erroValidacao.js';
 
 class UsuarioService{
 
-    static loginUsuario = async(info) => {
+    static loginUsuario = async(login, senha) => {
         try{
-            const client = connectDataBase();
+            const client = await connectDataBase();
             let sql;
-            if (info.login.includes('@')){
+            if (login.includes('@')){
 
-                sql = `SELECT idUsuario, senha FROM usuario WHERE email = ${info.login}`;
+                sql = `SELECT idusuario, senha FROM usuario WHERE email = '${login}'`;
             }else{
-                sql = `SELECT idUsuario, senha FROM usuario WHERE cpf = ${info.login}`;
+                sql = `SELECT idusuario, senha FROM usuario WHERE cpf = '${login}'`;
             }
 
+            
             //receber id do usuario e a senha
             const usuario = await client.query(sql);
-
+            
+            console.log(usuario)
             if(!usuario){
                 throw new NaoEncontrado("Usuario nao cadastrado");
             }
-
-            const senhasIguais = await compare(info.senha, usuario.rows[0].senha);
-
+            const senhasIguais = this.verificarSenha(senha, usuario.rows[0].senha);
+            
             if(!senhasIguais){
-               throw new erroValidacao("Usuario ou senha incorreto");
+                throw new erroValidacao("Usuario ou senha incorreto");
             }
             
-            const tokenAcesso = this.atualizarToken(usuario.rows[0].idUsuario, info.login)
+            const tokenAcesso = this.atualizarToken(usuario.rows[0].idusuario, login)
 
-            return { tokenAcesso }
+            return tokenAcesso 
 
         }catch(erro){
             throw erro;
         }
     }
 
-    static atualizarToken = async(idUsuario, login) => {
+    static atualizarToken = (idUsuario, login) => {
         
         const novoToken = jwt.sign({
-            idUsuario: idUsuario,
+            idusuario: idUsuario,
             login: login
         }, secret.chave, {
             expiresIn: 3600
@@ -52,6 +53,10 @@ class UsuarioService{
 
         return novoToken;
 
+    }
+
+    static verificarSenha = (senhaReq, senhaBanco) => {
+        return senhaReq === senhaBanco;
     }
     
 }

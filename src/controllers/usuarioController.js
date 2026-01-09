@@ -11,7 +11,7 @@ class UsuarioController{
         try{
             const { login, senha } = req.body;
 
-            const retornoService = await usuarioService.loginUsuario({ login, senha });
+            const retornoService = await usuarioService.loginUsuario(login, senha);
 
             res.status(200).json({
                 message: "Login bem sucedido",
@@ -29,11 +29,10 @@ class UsuarioController{
             const client = await connectDataBase();
             const { cpf, email, nome, senha, datanascimento} = req.body;
 
-            console.log(typeof(cpf), typeof(email), typeof(nome), typeof(senha), typeof(datanascimento));
-            const sql = `INSERT INTO usuario (cpf, email, nome, senha, datanascimento, datacadastro) VALUES (${cpf}, ${email}, ${nome}, ${senha}, ${datanascimento}, NOW())`;
+            const sql = `INSERT INTO usuario (cpf, email, nome, senha, datanascimento, datacadastro) VALUES ('${cpf}', '${email}', '${nome}', '${senha}', '${datanascimento}', NOW())`;
             
             const resultado = await client.query(sql);
-            console.log("entrou")
+            
             if(resultado.rowCount > 0){
                 res.status(200).json({
                     message: "Cadastro realizado com sucesso"
@@ -49,16 +48,18 @@ class UsuarioController{
     static atualizarDadosUsuario = async (req, res, next) => {
 
         try{
-            const client = connectDataBase();
+            const client = await connectDataBase();
+            let chave, valor;
+            
             const idUsuario = req.usuario.idusuario;
             const alteracaoNecessaria = Object.entries(req.body);
 
             let sql = `UPDATE usuario SET` 
             for( [chave, valor] of alteracaoNecessaria ){
-                sql += ` ${chave} = ${valor}`
+                sql += ` ${chave} = '${valor}'`
             }
             sql += ` WHERE idusuario = ${idUsuario}`
-
+            
             const resultado = await client.query(sql);
 
             if(resultado.rowCount > 0 ){
