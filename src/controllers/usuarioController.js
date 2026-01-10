@@ -57,6 +57,9 @@ class UsuarioController{
             let sql = `UPDATE usuario SET` 
             for( [chave, valor] of alteracaoNecessaria ){
                 sql += ` ${chave} = '${valor}'`
+                if(!alteracaoNecessaria[alteracaoNecessaria.length - 1].includes(chave)){
+                    sql += ',';
+                }
             }
             sql += ` WHERE idusuario = ${idUsuario}`
             
