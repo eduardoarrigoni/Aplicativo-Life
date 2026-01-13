@@ -7,8 +7,8 @@ class treinosController{
     static todostreinos = async (req, res, next) => {
         try{
             const client = await connectDataBase();
-            const sql = "SELECT "
-            const treinos = client.query()
+            const sql = `SELECT e.nome, e.caloriashora, t.tempo, t.data FROM treino t INNER JOIN exercicio e on(t.idexercicio = e.idexercicio) WHERE t.idusuario = ${req.usuario.idusuario}`;
+            const treinos = await client.query(sql);
             res.status(200).json(treinos);
         }catch(erro){
             next(erro);
@@ -17,18 +17,10 @@ class treinosController{
     static novoTreino = async (req, res, next) => {
 
         try{
+            const client = await connectDataBase();
 
-            const tratandoTreino = req.body;
-            const { data } = tratandoTreino;
-            const dataReq = new Date;
-            if(data) dataReq = data;
             
-            const diaDaSemana = CalculoSuporte.diaSemana(dataReq);
-            const semanaDoAno = CalculoSuporte.semanaAno(dataReq);
             
-            tratandoTreino.diaSemana = diaDaSemana;
-            tratandoTreino.semanaAno = semanaDoAno;
-            const treino = await treinoUnico.create(tratandoTreino);
             res.status(201).json({message: "Treino finalizado com sucesso", treino});
 
         }catch(erro){
