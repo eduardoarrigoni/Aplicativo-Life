@@ -42,6 +42,25 @@ class UsuarioService{
         }
     }
 
+    static atualizarDadosUsuario = async (req) => {
+
+        let chave, valor;
+            
+        const idUsuario = req.usuario.idusuario;
+        const alteracaoNecessaria = Object.entries(req.body);
+
+        let sql = `UPDATE usuario SET` 
+        for( [chave, valor] of alteracaoNecessaria ){
+            sql += ` ${chave} = '${valor}'`
+            if(!alteracaoNecessaria[alteracaoNecessaria.length - 1].includes(chave)){
+                sql += ',';
+            }
+        }
+        sql += ` WHERE idusuario = ${idUsuario}`;
+
+        return sql;
+    }
+
     static atualizarToken = (idUsuario, login) => {
         
         const novoToken = jwt.sign({

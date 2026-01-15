@@ -1,5 +1,5 @@
 import connectDataBase from '../config/dbConnect.js';
-import ErroDataBase from '../erros/erroDataBase.js';
+import erroBanco from '../erros/erroBanco.js';
 import erroValidacao from '../erros/erroValidacao.js';
 import usuarioService from '../services/usuarioService.js'
 
@@ -49,19 +49,8 @@ class UsuarioController{
 
         try{
             const client = await connectDataBase();
-            let chave, valor;
             
-            const idUsuario = req.usuario.idusuario;
-            const alteracaoNecessaria = Object.entries(req.body);
-
-            let sql = `UPDATE usuario SET` 
-            for( [chave, valor] of alteracaoNecessaria ){
-                sql += ` ${chave} = '${valor}'`
-                if(!alteracaoNecessaria[alteracaoNecessaria.length - 1].includes(chave)){
-                    sql += ',';
-                }
-            }
-            sql += ` WHERE idusuario = ${idUsuario}`
+            const sql = await usuarioService.atualizarDadosUsuario(req);
             
             const resultado = await client.query(sql);
 
@@ -70,7 +59,7 @@ class UsuarioController{
                     message: "Dado atualizado com sucesso"
                 })
             }else{
-                throw new ErroDataBase;
+                throw new erroBanco;
             }
 
         }catch(erro){

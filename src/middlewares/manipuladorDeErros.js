@@ -8,10 +8,13 @@ function manipuladorDeErros(erro, req, res, next){
 
     if(erro instanceof requisicaoIncorreta){
         erro.enviarResposta(res);
-    }else if(erro.code){
-        erro = new erroBanco(erro.code);
+    }else if(erro instanceof erroBanco){
         console.error(erro);
-        erro.enviarResposta()
+        erro.enviarResposta(res)
+    }else if(erro instanceof erroValidacao){
+        erro.enviarResposta(res)
+    }else{
+        
     }
         
 

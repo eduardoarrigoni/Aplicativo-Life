@@ -1,6 +1,8 @@
 import NaoEncontrado from "../../erros/NaoEncontrado.js";
 import CalculoSuporte from "../CalculoSuporte.js";
 import connectDataBase from "../../config/dbConnect.js";
+import erroBanco from "../../erros/erroBanco.js";
+import treinoService from "../../services/treinoService.js";
 
 class treinosController{
 
@@ -11,17 +13,37 @@ class treinosController{
             const treinos = await client.query(sql);
             res.status(200).json(treinos);
         }catch(erro){
+            if(erro.code){
+                throw new erroBanco(erro.code);       
+            }
             next(erro);
         }
     }
     static novoTreino = async (req, res, next) => {
 
+        //{
+        //  authorization: bearer token
+        //  nomeExercicio: 
+        //  duracao: 44.4
+        //  data: 1000.10.10
+        //}
         try{
             const client = await connectDataBase();
 
+            const service = await treinoService.novoTreino(req);
+
+            const sql = `INSERT INTO treino (idexercicio, idusuario, duracao, data, caloriasgastas) 
+                        VALUES ('${service.idexercicio}', '${service.idusuario}', '${service.duracao}', '${service.data}', '${service.caloriasgastas}')`;
             
+            const treino = await client.query(sql);
             
-            res.status(201).json({message: "Treino finalizado com sucesso", treino});
+            if(treino.rowCount > 0){
+                res.status(201).json({
+                    message: "Treino finalizado com sucesso"});
+                
+            }else{
+                throw new erroBanco();
+            }
 
         }catch(erro){
             next(erro);
@@ -29,40 +51,6 @@ class treinosController{
 
     }
     
-    static treinosSemanais = async (req, res, next) => {
-
-        try{
-            
-            const objetoTreinosSeparadosSemanas = {};
-            const treinosSemana = await treinoUnico.find({});
-            objetoTreinosSeparadosSemanas = treinosSemana.map( (treino) => {
-                
-                objetoTreinosSeparadosSemanas[treino.semanaAno].push(treino);
-
-            })
-            
-            res.status(200).json(objetoTreinosSeparadosSemanas);
-        }catch(erro){
-
-            next(erro);
-        }
-    }
-
-    static deletarTreinoId = async (req, res, next) => {
-
-        try{
-            const idTreino = req.params.id;
-            const treinoDesejado = await treinoUnico.findByIdAndDelete(idTreino);
-
-            if(treinoDesejado !== null){
-                res.status(200).json({message: "Treino removido."});
-            }else{
-                next(new NaoEncontrado("Treino não encontrado."));
-            }
-        }catch(erro){
-            next(erro);
-        }
-    }
         
 
 
