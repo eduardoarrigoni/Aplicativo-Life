@@ -1,5 +1,3 @@
-import NaoEncontrado from "../../erros/NaoEncontrado.js";
-import CalculoSuporte from "../CalculoSuporte.js";
 import connectDataBase from "../../config/dbConnect.js";
 import erroBanco from "../../erros/erroBanco.js";
 import treinoService from "../../services/treinoService.js";

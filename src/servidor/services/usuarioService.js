@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken';
 import secret from '../config/chaveSecreta.js';
 import connectDataBase from '../config/dbConnect.js';
-import { compare } from 'bcryptjs';
 import NaoEncontrado from '../erros/NaoEncontrado.js';
 import erroValidacao from '../erros/erroValidacao.js';
 

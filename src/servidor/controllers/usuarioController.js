@@ -51,7 +51,7 @@ class UsuarioController{
             const client = await connectDataBase();
             
             const sql = await usuarioService.atualizarDadosUsuario(req);
-            
+
             const resultado = await client.query(sql);
 
             if(resultado.rowCount > 0 ){
