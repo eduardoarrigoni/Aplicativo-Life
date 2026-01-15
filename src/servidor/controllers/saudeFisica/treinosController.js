@@ -1,6 +1,7 @@
 import connectDataBase from "../../config/dbConnect.js";
 import erroBanco from "../../erros/erroBanco.js";
 import treinoService from "../../services/treinoService.js";
+import ControllerBase from "../controllerBase.ts"
 
 class treinosController{
 
@@ -47,6 +48,27 @@ class treinosController{
             next(erro);
         }
 
+    }
+
+    static deletarTreinoId = async (req, res, next) => {
+
+        try{
+            
+            const client = await connectDataBase();
+
+            const sql = `DELETE FROM treino WHERE idtreino = '${req.params.id}'`;
+            
+            const deletado = await client.query(sql);
+
+            res.status(200).json({
+                message: "Treino excluido com sucesso",
+                treino: deletado.rows[0]
+            })
+
+
+        }catch(erro){
+            next(erro);
+        }
     }
     
         
