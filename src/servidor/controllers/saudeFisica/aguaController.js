@@ -1,35 +1,36 @@
 import connectDataBase from '../../config/dbConnect.js';
 import erroBanco from '../../erros/erroBanco.js';
+import AguaService from '../../services/aguaService.js';
 
 class AguaController{
     
     
-    static adicionarSono = async (req, res, next) =>{
+    static adicionarQuantidadeAguaDiaria = async (req, res, next) =>{
         
         try{
             
             const client = await connectDataBase();
 
-            const sql = `INSERT INTO sono (idusuario, iniciosono, fimsono) VALUES (${req.usuario.idusuario}, '${req.iniciosono}', '${req.fimsono}')`;
+            const sql = await AguaService.adicionarQuantidadeAguaDiaria(req);
 
-            const sonoArmazenado = await client.query(sql);
+            const registro = await client.query(sql);
 
             res.status(200).json({
-                message: "Registro de sono armazenado com sucesso"
+                message: "Registro de ingestão de água adicionado com sucesso"
             })
         }catch(erro){
             next(erro);
         }
     }
 
-    static todosSonos = async (req, res, next) => {
+    static todosRegistros = async (req, res, next) => {
         try{
             const client = await connectDataBase();
-            const sql = `SELECT iniciosono, fimsono FROM sono WHERE idusuario = ${req.usuario.idusuario}`;
+            const sql = `SELECT data, quantidadediaria FROM ingestaoagua WHERE idusuario = ${req.usuario.idusuario}`;
 
-            const sonos = await client.query(sql);
+            const registros = await client.query(sql);
 
-            res.status(200).json(sonos.rows);
+            res.status(200).json(registros.rows);
         }catch(erro){
             if(erro.code){
                 throw new erroBanco(erro.code);       
@@ -38,19 +39,19 @@ class AguaController{
         }
     }
 
-    static deletarSonoId = async (req, res, next) => {
+    static deletarIngestaoId = async (req, res, next) => {
 
         try{
             
             const client = await connectDataBase();
 
-            const sql = `DELETE FROM sono WHERE idsono = '${req.params.id}'`;
+            const sql = `DELETE FROM ingestaoagua WHERE idingestaoagua = '${req.params.id}'`;
             
             const deletado = await client.query(sql);
 
             res.status(200).json({
-                message: "Sono excluido com sucesso",
-                sono: deletado.rows[0]
+                message: "Registro excluido com sucesso",
+                registro: deletado.rows[0]
             });
 
 
@@ -63,4 +64,4 @@ class AguaController{
     
 };
 
-export default SonoController;
+export default AguaController;
